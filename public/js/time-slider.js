@@ -28,9 +28,8 @@ $("#slider-range").slider({
             minutes1 = minutes1;
         }
 
-
-
         $('.slider-time').html(hours1 + ':' + minutes1);
+        $('input.slider-time').attr('value', '' + hours1 + ':' + minutes1 + '');
 
         var hours2 = Math.floor(ui.values[1] / 60);
         var minutes2 = ui.values[1] - (hours2 * 60);
@@ -55,5 +54,6 @@ $("#slider-range").slider({
         }
 
         $('.slider-time2').html(hours2 + ':' + minutes2);
+        $('input.slider-time2').attr('value', '' + hours2 + ':' + minutes2 + '');
     }
 });

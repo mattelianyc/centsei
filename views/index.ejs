@@ -165,9 +165,9 @@ nav {
                   '4:15 PM',
                   '4:40 PM',
                   '5:00 PM']
-                  
+
           for (var i = 0; i < data.transactions.length; i++) {
-            $('#transaction-data').append('<tr><td>'+data.transactions[i].date+'</td><td>'+time[i]+'</td><td>'+data.transactions[i].amount+'</td><td>'+data.transactions[i].category+'</td></tr>');
+            $('#transaction-data').append('<tr><td>'+data.transactions[i].date+'</td><td>'+time[i]+'</td><td>'+data.transactions[i].amount+'</td><td>'+data.transactions[i].name+'</td><td>'+data.transactions[i].category+'</td></tr>');
           }
 
       }
@@ -220,6 +220,15 @@ nav {
   }
   </script>
 <script src="js/time-slider.js"></script>
-
+<script>
+  // $(document).ready(function () {
+  //   $('input.slider-time').on('change', function () {
+  //     $(this).attr('value') == $('.slider-time').text();
+  //   });
+  //   $('input.slider-time2').on('change', function () {
+  //     $(this).attr('value') == $('.slider-time2').text();
+  //   });
+  // });
+</script>
 </body>
 </html>
