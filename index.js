@@ -2,18 +2,20 @@
 
 var envvar = require('envvar');
 var express = require('express');
+var router = express.Router();
 var bodyParser = require('body-parser');
 var moment = require('moment');
 var plaid = require('plaid');
 
-var PLAID_CLIENT_ID= '5a5c2444efe64e49ca4ae677';
-var PLAID_SECRET='7a5692c6699bcea9c37ddd385aff00';
-var PLAID_PUBLIC_KEY='40e727f20ee1768ea2f2df4202e224';
+
+// var PLAID_CLIENT_ID= '';
+// var PLAID_SECRET='';
+// var PLAID_PUBLIC_KEY='';
 
 var APP_PORT = envvar.number('APP_PORT', 8000);
-// var PLAID_CLIENT_ID = envvar.string('PLAID_CLIENT_ID');
-// var PLAID_SECRET = envvar.string('PLAID_SECRET');
-// var PLAID_PUBLIC_KEY = envvar.string('PLAID_PUBLIC_KEY');
+var PLAID_CLIENT_ID = envvar.string('PLAID_CLIENT_ID', '5a5c2444efe64e49ca4ae677');
+var PLAID_SECRET = envvar.string('PLAID_SECRET', '7a5692c6699bcea9c37ddd385aff00');
+var PLAID_PUBLIC_KEY = envvar.string('PLAID_PUBLIC_KEY', '40e727f20ee1768ea2f2df4202e224');
 var PLAID_ENV = envvar.string('PLAID_ENV', 'sandbox');
 
 // We store the access_token in memory - in production, store it in a secure
@@ -131,6 +133,13 @@ app.post('/transactions', function(request, response, next) {
     }
     console.log('pulled ' + transactionsResponse.transactions.length + ' transactions');
     response.json(transactionsResponse);
+  });
+});
+
+app.post('/logout', function(request, response, next) {
+  client.resetLogin(ACCESS_TOKEN, function (error, response) {
+    console.log(error);
+    console.log(response);
   });
 });
 

@@ -2,18 +2,21 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Plaid Walkthrough Example</title>
+<title>Centsei</title>
 <link rel="stylesheet" type="text/css" href="style.css">
 <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="css/sidebar.css">
 <link rel="stylesheet" type="text/css" href="css/fontawesome-all.min.css">
+<link rel="stylesheet" type="text/css" href="css/jquery-ui.min.css">
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style type="text/css">
   
 * {font-family: Open Sans, sans-serif !important;}
-
+#map {
+  height: 100%;
+}
 nav {
   margin-bottom: 0 !important;
   border-radius: 0 !important;
@@ -40,6 +43,10 @@ nav {
   background: #126bc5;
   color: white;
 }
+
+#authenticated-container {
+  display: none;
+}
 </style>
 
 </head>
@@ -53,13 +60,11 @@ nav {
           <a class="navbar-brand" href="#">Cash or Credit</a>
         </div>
         <ul id="top-nav-links" class="nav navbar-nav navbar-right">
-          <li class="active"><a href="#">Home</a></li>
-          <li><a href="#">Profile</a></li>
-          <li><a href="#">Settings</a></li>
-          <li><a href="#">Log Out</a></li>
+          <li><button id="log-out-btn"><i class="fa fa-logout"></i></button></li>
         </ul>
       </div>
     </nav>
+
     <nav id="sub-nav" class="navbar navbar-default">
       <div class="container-fluid">
         <div class="navbar-header">
@@ -80,128 +85,141 @@ nav {
 
   <!-- CONTENT WRAPPER -->
   <div id="wrapper">
-    <div id="sidebar-wrapper">
-        <ul class="sidebar-nav">
-            <!-- <li class="sidebar-brand">
-                <a href="#">
-                    Start Bootstrap
-                </a>
-            </li> -->
-            <li>
-                <a href="#">Dashboard</a>
-            </li>
-            <li>
-                <a href="#">Shortcuts</a>
-            </li>
-            <li>
-                <a href="#">Overview</a>
-            </li>
-            <li>
-                <a href="#">Events</a>
-            </li>
-            <li>
-                <a href="#">About</a>
-            </li>
-            <li>
-                <a href="#">Services</a>
-            </li>
-            <li>
-                <a href="#">Contact</a>
-            </li>
-        </ul>
-    </div>
-    <div id="page-content-wrapper">
-      <div class="container">
-        <div class="row">
-          <button id="link-btn">Link Account</button>
-        </div>
-        <div class="row">
-          <div class="box">
-            <button id="get-accounts-btn">Get Accounts</button>
-            <div id="get-accounts-data"></div>
-          </div>
 
-          <div class="box">
-            <button id="get-item-btn">Get Item</button>
-            <div id="get-item-data"></div>
-          </div>
+    <% include ../partials/login %>
+    
 
-          <div class="box">
-            <button id="get-transactions-btn">Get Transactions</button>
-            <div id="get-transactions-data"></div>
-          </div>
-        </div>
-      </div>
+    <div id="authenticated-container" class="container">
+      <% include ../partials/sidebar %>
+      <% include ../partials/page_content %>
+      <% include ../partials/transactions %>
     </div>
+
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
   <script src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"></script>
 
   <script type="text/javascript" src="js/jquery.min.js"></script>
+  <script type="text/javascript" src="js/jquery-ui.min.js"></script>
   <script type="text/javascript" src="js/bootstrap.min.js"></script>
   <script type="text/javascript" src="js/fontawesome-all.min.js"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAiimbfSFIROQOBNPEriIZkV6jo_5aZ7ic&callback=initMap"
+    async defer></script>
+
+  
+<script>
+(function() {
+
+  $("#menu-toggle").click(function(e) {
+      e.preventDefault();
+      $("#wrapper").toggleClass("toggled");
+  });
+
+  $('#link-btn').on('click', function(e) {
+    handler.open();
+  });
+  $('#log-out-btn').on('click', function(e) {
+    logoutHandler.exit();
+  });
+
+  $('#get-accounts-btn').on('click', function(e) {
+    $.get('/accounts', function(data) {
+      if (data.error) {
+        console.log(data.error);
+      } else {
+        console.log('accounts'+data);
+      }
+    });
+   });
+
+  $('#get-item-btn').on('click', function(e) {
+    $.post('/item', function(data) {
+      if (data.error) {
+        console.log(data.error);
+      } else {
+        console.log(data);
+      }
+    });
+  });
+
+  var getTransactions = function () {
+    $.post('/transactions', function(data) {
+      if (data.error) {
+        console.log(data.error);
+      } else {
+        console.log(data);
+
+          var time = new Array();
+          time = ['10:05 AM',
+                  '10:10 AM',
+                  '10:25 AM',
+                  '10:40 AM',
+                  '12:15 PM',
+                  '12:20 PM',
+                  '1:15 PM',
+                  '1:20 PM',
+                  '1:40 PM',
+                  '2:00 PM',
+                  '2:40 PM',
+                  '4:15 PM',
+                  '4:40 PM',
+                  '5:00 PM']
+                  
+          for (var i = 0; i < data.transactions.length; i++) {
+            $('#transaction-data').append('<tr><td>'+data.transactions[i].date+'</td><td>'+time[i]+'</td><td>'+data.transactions[i].amount+'</td><td>'+data.transactions[i].category+'</td></tr>');
+          }
+
+      }
+    });
+  }
+
+  var handler = Plaid.create({
+    apiVersion: 'v2',
+    clientName: 'Plaid Walkthrough Demo',
+    env: '<%= PLAID_ENV %>',
+    product: ['transactions'],
+    key: '<%= PLAID_PUBLIC_KEY %>',
+    onSuccess: function(public_token) {
+      $.post('/get_access_token', {
+        public_token: public_token
+      }, function() {
+        getTransactions();
+        $('#login-container').hide();
+        $('#authenticated-container').fadeIn();
+      });
+    },
+  });
+
+  var logoutHandler = Plaid.create({
+    apiVersion: 'v2',
+    clientName: 'Plaid Walkthrough Demo',
+    env: '<%= PLAID_ENV %>',
+    product: ['transactions'],
+    key: '<%= PLAID_PUBLIC_KEY %>',
+    onSuccess: function(public_token) {
+      $.post('/logout', {
+        public_token: public_token
+      }, function() {
+        $('#authenticated-container').fadeOut();
+        $('#login-container').fadeIn();
+      });
+    },
+  });
+})();
+
+</script>
 
   <script type="text/javascript">
-  $(document).ready(function () { 
-
-    $("#menu-toggle").click(function(e) {
-        e.preventDefault();
-        $("#wrapper").toggleClass("toggled");
+  var map;
+  function initMap() {
+    map = new google.maps.Map(document.getElementById('map'), {
+      center: {lat: 40.758896, lng: -73.985130},
+      zoom: 13
     });
-
-    $('#link-btn').on('click', function(e) {
-      handler.open();
-    });
-
-    $('#get-accounts-btn').on('click', function(e) {
-      $.get('/accounts', function(data) {
-        if (data.error) {
-          console.log(data.error);
-        } else {
-          console.log('accounts'+data);
-        }
-      });
-     });
-
-    $('#get-item-btn').on('click', function(e) {
-      $.post('/item', function(data) {
-        if (data.error) {
-          console.log(data.error);
-        } else {
-          console.log(data);
-        }
-      });
-    });
-
-    $('#get-transactions-btn').on('click', function(e) {
-      $.post('/transactions', function(data) {
-        if (data.error) {
-          console.log(data.error);
-        } else {
-          console.log(data);
-        }
-      });
-    });
-    var handler = Plaid.create({
-      apiVersion: 'v2',
-      clientName: 'Plaid Walkthrough Demo',
-      env: '<%= PLAID_ENV %>',
-      product: ['transactions'],
-      key: '<%= PLAID_PUBLIC_KEY %>',
-      onSuccess: function(public_token) {
-        $.post('/get_access_token', {
-          public_token: public_token
-        }, function() {
-          $('#container').fadeOut('fast', function() {
-            $('#intro').hide();
-            $('#app, #steps').fadeIn('slow');
-          });
-        });
-      },
-    });
-
-  });
+  }
   </script>
+<script src="js/time-slider.js"></script>
+
 </body>
 </html>
