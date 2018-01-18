@@ -6,6 +6,8 @@
 <link rel="stylesheet" type="text/css" href="style.css">
 <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="css/sidebar.css">
+<link rel="stylesheet" type="text/css" href="css/fontawesome-all.min.css">
+
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style type="text/css">
@@ -27,6 +29,11 @@ nav {
   }
   #top-nav-links > li > a {
     color: white !important;
+  }
+
+#sub-nav {}
+  .fa-bars {
+    color: #126bc5;
   }
 
 #sidebar-wrapper {
@@ -56,7 +63,11 @@ nav {
     <nav id="sub-nav" class="navbar navbar-default">
       <div class="container-fluid">
         <div class="navbar-header">
-          <!-- <a class="navbar-brand" href="#">Cash or Credit</a> -->
+          <div class="navbar-brand">
+            <a id="menu-toggle" href="#menu-toggle">
+              <i class="fa fa-bars fa-lg"></i>
+            </a>
+          </div>
         </div>
         <ul class="nav navbar-nav">
           <li class="active"><a href="#">Expenses</a></li>
@@ -102,7 +113,6 @@ nav {
     <div id="page-content-wrapper">
       <div class="container">
         <div class="row">
-          <a href="#menu-toggle" class="btn btn-secondary" id="menu-toggle">Toggle Menu</a>
           <button id="link-btn">Link Account</button>
         </div>
         <div class="row">
@@ -130,6 +140,7 @@ nav {
 
   <script type="text/javascript" src="js/jquery.min.js"></script>
   <script type="text/javascript" src="js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="js/fontawesome-all.min.js"></script>
 
   <script type="text/javascript">
   $(document).ready(function () { 
