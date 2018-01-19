@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Centsei</title>
+<title>centsei</title>
 <link rel="stylesheet" type="text/css" href="style.css">
 <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="css/sidebar.css">
@@ -57,7 +57,7 @@ nav {
     <nav id="super-nav" class="navbar navbar-default">
       <div class="container-fluid">
         <div class="navbar-header">
-          <a class="navbar-brand" href="#">Cash or Credit</a>
+          <a class="navbar-brand" href="#">centsei</a>
         </div>
         <ul id="top-nav-links" class="nav navbar-nav navbar-right">
           <li><button id="log-out-btn"><i class="fa fa-logout"></i></button></li>
@@ -109,7 +109,25 @@ nav {
 
   
 <script>
+var inputVal;
+var time = new Array();
+
 (function() {
+  
+  time = ['10:05 AM',
+          '10:10 AM',
+          '10:25 AM',
+          '10:40 AM',
+          '12:15 PM',
+          '12:20 PM',
+          '1:15 PM',
+          '1:20 PM',
+          '1:40 PM',
+          '2:00 PM',
+          '2:40 PM',
+          '4:15 PM',
+          '4:40 PM',
+          '5:00 PM']
 
   $("#menu-toggle").click(function(e) {
       e.preventDefault();
@@ -148,31 +166,41 @@ nav {
       if (data.error) {
         console.log(data.error);
       } else {
-        console.log(data);
-
-          var time = new Array();
-          time = ['10:05 AM',
-                  '10:10 AM',
-                  '10:25 AM',
-                  '10:40 AM',
-                  '12:15 PM',
-                  '12:20 PM',
-                  '1:15 PM',
-                  '1:20 PM',
-                  '1:40 PM',
-                  '2:00 PM',
-                  '2:40 PM',
-                  '4:15 PM',
-                  '4:40 PM',
-                  '5:00 PM']
-
-          for (var i = 0; i < data.transactions.length; i++) {
-            $('#transaction-data').append('<tr><td>'+data.transactions[i].date+'</td><td>'+time[i]+'</td><td>'+data.transactions[i].amount+'</td><td>'+data.transactions[i].name+'</td><td>'+data.transactions[i].category+'</td></tr>');
-          }
-
+        console.log(data);          
+        for (var i = 0; i < data.transactions.length; i++) {
+          $('#transaction-data').append('<tr><td>'+data.transactions[i].date+'</td><td>'+time[i]+'</td><td>'+data.transactions[i].amount+'</td><td>'+data.transactions[i].name+'</td><td>'+data.transactions[i].category+'</td></tr>');
+        }
       }
     });
   }
+
+  var filterTransactionsByName = function (inputVal) {
+    $.post('/transactions', function(data) {
+      if (data.error) {
+        console.log(data.error);
+      } else {
+        console.log(data);
+        $('#transaction-data').empty();
+        for (var i = 0; i < data.transactions.length; i++) {
+          if(data.transactions[i].name == inputVal) {
+            $('#transaction-data').append('<tr><td>'+data.transactions[i].date+'</td><td>'+time[i]+'</td><td>'+data.transactions[i].amount+'</td><td>'+data.transactions[i].name+'</td><td>'+data.transactions[i].category+'</td></tr>');
+          }
+        }    
+      }   
+    });
+  }
+    
+  $('#filter-name-data-btn').click(function (e) {
+    e.preventDefault();
+    inputVal = $('#name-filter-text-input').val();
+    filterTransactionsByName(inputVal);
+  });  
+
+  $('#reset-transaction-data-filter').click(function (e) {
+    e.preventDefault();
+    $('#transaction-data').empty();
+    getTransactions();
+  });
 
   var handler = Plaid.create({
     apiVersion: 'v2',
@@ -221,14 +249,9 @@ nav {
   </script>
 <script src="js/time-slider.js"></script>
 <script>
-  // $(document).ready(function () {
-  //   $('input.slider-time').on('change', function () {
-  //     $(this).attr('value') == $('.slider-time').text();
-  //   });
-  //   $('input.slider-time2').on('change', function () {
-  //     $(this).attr('value') == $('.slider-time2').text();
-  //   });
-  // });
+  $(document).ready(function () {
+
+  });
 </script>
 </body>
 </html>

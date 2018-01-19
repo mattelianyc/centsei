@@ -1,0 +1,44 @@
+  
+* {font-family: Open Sans, sans-serif !important;}
+
+html, body {
+  position:absolute;
+  top: 0; left: 0;  right: 0; bottom: 0;
+}
+#map {
+  height: 100%;
+}
+nav {
+  margin-bottom: 0 !important;
+  border-radius: 0 !important;
+  background: white;
+}
+
+#super-nav {
+  border-radius: 0 !important;
+  background: #126bc5;
+}
+  .navbar-brand {
+    color: white !important;
+  }
+  #top-nav-links > li > a {
+    color: white !important;
+  }
+
+#sub-nav {}
+  .fa-bars {
+    color: #126bc5;
+  }
+
+#sidebar-wrapper {
+  background: #126bc5;
+  color: white;
+}
+
+#authenticated-container {
+  display: none;
+}
+
+.fa-key {
+  cursor: pointer;
+}

@@ -5,8 +5,17 @@
         <th class="text-center"><h2>Date</h2></th>
         <th class="text-center"><h2>Time</h2></th>
         <th class="text-center"><h2>Amount</h2></th>
-        <th class="text-center"><h2>Name</h2></th>
+        <th class="text-center">
+          <div class="input-group">
+          <h2> Name 
+            <input id="name-filter-text-input" type="text" class="form-control" placeholder="Filter By Name...">
+            <span class="input-group-btn">
+              <button id="filter-name-data-btn" class="btn btn-default" type="button"><i class="fa fa-filter"></i></button>
+            </span>
+          </div>
+        </h2></th>
         <th class="text-center"><h2>Category</h2></th>
+        <th class="text-center"><button id="reset-transaction-data-filter" class="btn btn-default btn-info"><i class="fa fa-refresh"></i></button></th>
       </tr>
     </thead>
     <tbody id="transaction-data">
