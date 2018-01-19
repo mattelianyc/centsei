@@ -1,10 +1,10 @@
   
 * {font-family: Open Sans, sans-serif !important;}
 
-html, body {
+/*html, body {
   position:absolute;
   top: 0; left: 0;  right: 0; bottom: 0;
-}
+}*/
 #map {
   height: 100%;
 }
@@ -41,4 +41,8 @@ nav {
 
 .fa-key {
   cursor: pointer;
+}
+
+span.input-group-btn {
+  padding: 0 !important;
 }
